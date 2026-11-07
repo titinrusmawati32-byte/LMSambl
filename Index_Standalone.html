@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS EduCloud - Smart Learning Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Inlined styles from style.css */
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #8b5cf6;
+      --primary-dark: #6d28d9;
+      --primary-subtle: #ede9fe;
+      --accent-cyan: #06b6d4;
+      --accent-pink: #ec4899;
+      --accent-amber: #f59e0b;
+      --accent-emerald: #10b981;
+      --bg-gradient-start: #f3f0ff;
+      --bg-gradient-end: #e0e7ff;
+      --surface: #ffffff;
+      --surface-glass: rgba(255, 255, 255, 0.85);
+      --surface-border: rgba(255, 255, 255, 0.6);
+      --text-main: #1e1b4b;
+      --text-muted: #6b7280;
+      --text-subtle: #9ca3af;
+      --shadow-sm: 0 4px 6px -1px rgba(124, 58, 237, 0.08), 0 2px 4px -2px rgba(124, 58, 237, 0.05);
+      --shadow-md: 0 10px 25px -5px rgba(124, 58, 237, 0.12), 0 8px 10px -6px rgba(124, 58, 237, 0.06);
+      --shadow-lg: 0 20px 35px -10px rgba(124, 58, 237, 0.2), 0 10px 15px -8px rgba(124, 58, 237, 0.1);
+      --shadow-glow: 0 0 25px rgba(139, 92, 246, 0.35);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+    body { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 40%, #e0e7ff 100%); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    .bg-glow-orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; pointer-events: none; opacity: 0.55; }
+    .orb-1 { width: 380px; height: 380px; background: #c084fc; top: -100px; left: -80px; }
+    .orb-2 { width: 420px; height: 420px; background: #818cf8; bottom: -100px; right: -80px; }
+    .orb-3 { width: 250px; height: 250px; background: #38bdf8; top: 40%; left: 60%; }
+    .navbar { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.8); box-shadow: var(--shadow-sm); padding: 0.85rem 1.75rem; display: flex; align-items: center; justify-content: space-between; }
+    .nav-brand { display: flex; align-items: center; gap: 0.75rem; font-weight: 800; font-size: 1.25rem; color: var(--primary-dark); cursor: pointer; }
+    .nav-logo-icon { width: 42px; height: 42px; border-radius: var(--radius-md); background: linear-gradient(135deg, #8b5cf6, #ec4899); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
+    .nav-badge-cloud { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; font-size: 0.75rem; padding: 0.2rem 0.65rem; border-radius: var(--radius-full); font-weight: 700; }
+    .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .user-profile-badge { display: flex; align-items: center; gap: 0.6rem; padding: 0.35rem 0.9rem 0.35rem 0.45rem; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: var(--radius-full); }
+    .user-avatar-pill { width: 34px; height: 34px; border-radius: var(--radius-full); background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .user-meta-name { font-size: 0.85rem; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+    .user-meta-role { font-size: 0.7rem; font-weight: 600; color: var(--primary); text-transform: uppercase; }
+    .app-container { max-width: 1280px; width: 100%; margin: 0 auto; padding: 1.75rem; flex: 1; }
+    .hero-card { position: relative; overflow: hidden; border-radius: var(--radius-lg); background: linear-gradient(135deg, #7c3aed 0%, #9333ea 50%, #4f46e5 100%); color: white; padding: 2.25rem; margin-bottom: 2rem; box-shadow: var(--shadow-lg), var(--shadow-glow); }
+    .hero-header-row { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
+    .hero-title { font-size: 1.85rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .hero-subtitle { font-size: 0.95rem; opacity: 0.9; max-width: 580px; line-height: 1.5; }
+    .hero-badge-pill { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(255, 255, 255, 0.22); backdrop-filter: blur(8px); padding: 0.4rem 0.9rem; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; }
+    .hero-slider-bar { margin-top: 1.75rem; position: relative; z-index: 1; }
+    .hero-slider-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; opacity: 0.95; }
+    .hero-progress-track { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.25); border-radius: var(--radius-full); overflow: hidden; }
+    .hero-progress-fill { height: 100%; background: linear-gradient(90deg, #38bdf8, #a78bfa, #f472b6); border-radius: var(--radius-full); transition: width 0.8s ease-in-out; }
+    .quick-action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .action-tile-btn { background: var(--surface-glass); backdrop-filter: blur(12px); border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 1.25rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.65rem; box-shadow: var(--shadow-sm); cursor: pointer; transition: var(--transition); }
+    .action-tile-btn:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .action-tile-btn.active { background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(168, 85, 247, 0.15)); border-color: var(--primary); }
+    .tile-icon-box { width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; }
+    .tile-icon-purple { background: linear-gradient(135deg, #c084fc, #9333ea); color: #fff; }
+    .tile-icon-amber { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #fff; }
+    .tile-icon-cyan { background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff; }
+    .tile-icon-emerald { background: linear-gradient(135deg, #34d399, #059669); color: #fff; }
+    .tile-label { font-size: 0.88rem; font-weight: 700; text-align: center; }
+    .tile-subtext { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+    .glass-panel { background: var(--surface-glass); backdrop-filter: blur(16px); border: 1px solid var(--surface-border); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-md); margin-bottom: 2rem; }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .panel-title { display: flex; align-items: center; gap: 0.65rem; font-size: 1.25rem; font-weight: 800; color: var(--text-main); }
+    .panel-title-icon { color: var(--primary); font-size: 1.35rem; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem 1.35rem; border-radius: var(--radius-full); font-size: 0.88rem; font-weight: 700; cursor: pointer; border: none; transition: var(--transition); text-decoration: none; }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35); }
+    .btn-primary:hover { background: linear-gradient(135deg, #6d28d9, #9333ea); transform: translateY(-2px); }
+    .btn-secondary { background: rgba(255, 255, 255, 0.9); color: var(--text-main); border: 1px solid rgba(139, 92, 246, 0.25); }
+    .btn-secondary:hover { background: #f5f3ff; transform: translateY(-2px); }
+    .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+    .btn-sm { padding: 0.45rem 0.9rem; font-size: 0.78rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.45rem; }
+    .form-control, .form-select, .form-textarea { width: 100%; padding: 0.75rem 1.15rem; font-size: 0.9rem; border-radius: var(--radius-md); border: 1.5px solid rgba(139, 92, 246, 0.2); background: rgba(255, 255, 255, 0.95); outline: none; }
+    .form-control:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15); }
+    .form-textarea { min-height: 110px; resize: vertical; }
+    .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+    .stat-card { background: rgba(255, 255, 255, 0.9); border-radius: var(--radius-md); padding: 1.35rem; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; }
+    .stat-number { font-size: 2rem; font-weight: 800; color: var(--primary-dark); }
+    .stat-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+    .stat-icon-wrapper { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1.35rem; }
+    .item-card { background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(139, 92, 246, 0.15); border-radius: var(--radius-md); padding: 1.35rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; transition: var(--transition); }
+    .item-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .item-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.85rem; }
+    .item-type-badge { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); text-transform: uppercase; }
+    .badge-youtube { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+    .badge-gdrive { background: #dbeafe; color: #2563eb; border: 1px solid #93c5fd; }
+    .badge-website { background: #d1fae5; color: #059669; border: 1px solid #6ee7b7; }
+    .badge-class { background: var(--primary-subtle); color: var(--primary-dark); font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); }
+    .item-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; }
+    .item-desc { font-size: 0.84rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 1.25rem; }
+    .item-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 0.85rem; border-top: 1px solid rgba(0, 0, 0, 0.05); font-size: 0.78rem; color: var(--text-muted); }
+    .status-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700; }
+    .status-pending { background: #fef3c7; color: #d97706; }
+    .status-submitted { background: #e0e7ff; color: #4338ca; }
+    .status-graded { background: #d1fae5; color: #047857; }
+    .table-responsive { width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid rgba(139, 92, 246, 0.15); background: rgba(255, 255, 255, 0.95); }
+    .custom-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }
+    .custom-table th { background: #f5f3ff; color: var(--primary-dark); font-weight: 700; padding: 0.85rem 1.15rem; border-bottom: 1.5px solid rgba(139, 92, 246, 0.15); }
+    .custom-table td { padding: 0.85rem 1.15rem; border-bottom: 1px solid rgba(0, 0, 0, 0.05); vertical-align: middle; }
+    .custom-table tr:hover { background: rgba(245, 243, 255, 0.6); }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1.25rem; opacity: 0; visibility: hidden; transition: var(--transition); }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-content { background: var(--surface); border-radius: var(--radius-lg); width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg), var(--shadow-glow); }
+    .modal-header { padding: 1.5rem 1.75rem; background: linear-gradient(135deg, #f5f3ff, #ffffff); border-bottom: 1px solid rgba(139, 92, 246, 0.15); display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-size: 1.25rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem; }
+    .modal-close-btn { background: #ede9fe; color: var(--primary-dark); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .modal-body { padding: 1.75rem; }
+    .modal-footer { padding: 1.25rem 1.75rem; background: #fbfbfe; border-top: 1px solid rgba(0, 0, 0, 0.05); display: flex; justify-content: flex-end; gap: 0.75rem; }
+    .video-responsive-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius-md); background: #000; }
+    .video-responsive-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none; }
+    .toast { pointer-events: auto; background: #1e1b4b; color: #fff; padding: 0.85rem 1.35rem; border-radius: var(--radius-md); font-size: 0.88rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem; }
+    .toast.toast-success { background: linear-gradient(135deg, #059669, #10b981); }
+    .toast.toast-error { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .toast.toast-info { background: linear-gradient(135deg, #7c3aed, #9333ea); }
+    .loading-spinner-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(4px); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; }
+    .loading-spinner-overlay.active { opacity: 1; visibility: visible; }
+    .spinner-ring { width: 56px; height: 56px; border: 4px solid var(--primary-subtle); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { margin-top: 1rem; font-size: 0.95rem; font-weight: 700; color: var(--primary-dark); }
+    .tabs-nav { display: flex; gap: 0.5rem; background: rgba(237, 233, 254, 0.6); padding: 0.35rem; border-radius: var(--radius-full); margin-bottom: 1.5rem; }
+    .tab-btn { padding: 0.6rem 1.25rem; border-radius: var(--radius-full); border: none; background: transparent; color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+    .tab-btn.active { background: #ffffff; color: var(--primary-dark); box-shadow: var(--shadow-sm); }
+  </style>
+</head>
+<body>
+  <!-- Floating Orbs -->
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+  <div class="bg-glow-orb orb-3"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-brand" onclick="location.reload()">
+      <div class="nav-logo-icon">☁️</div>
+      <div>
+        <span style="font-weight: 800; color: #1e1b4b;">EduCloud</span>
+        <span class="nav-badge-cloud">LMS</span>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <div id="userProfileBadge" class="user-profile-badge" style="display: none;">
+        <div id="navUserAvatar" class="user-avatar-pill">A</div>
+        <div>
+          <div id="navUserName" class="user-meta-name">Administrator</div>
+          <div id="navUserRole" class="user-meta-role">ADMIN</div>
+        </div>
+      </div>
+      <button id="btnLogout" class="btn btn-sm btn-secondary" style="display: none;">🚪 Keluar</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- VIEW 1: LOGIN -->
+    <div id="loginView" style="max-width: 480px; margin: 3rem auto;">
+      <div class="glass-panel" style="padding: 2.5rem 2rem;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <div style="width: 68px; height: 68px; border-radius: 22px; background: linear-gradient(135deg, #7c3aed, #ec4899); display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #fff; margin-bottom: 1rem;">🎓</div>
+          <h2 style="font-size: 1.65rem; font-weight: 800;">LMS EduCloud</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Masuk ke portal pembelajaran interaktif Anda</p>
+        </div>
+        <div class="tabs-nav" style="margin-bottom: 1.75rem;">
+          <button id="tabBtnLoginAdmin" class="tab-btn active" style="flex: 1; justify-content: center;">👑 Admin / Guru</button>
+          <button id="tabBtnLoginSiswa" class="tab-btn" style="flex: 1; justify-content: center;">👨‍🎓 Siswa</button>
+        </div>
+        <form id="formLoginAdmin">
+          <div class="form-group">
+            <label class="form-label">Username Admin</label>
+            <input type="text" id="adminUsernameInput" class="form-control" placeholder="Contoh: admin" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password Admin</label>
+            <input type="password" id="adminPasswordInput" class="form-control" placeholder="••••••••" required>
+          </div>
+          <div style="background: #f5f3ff; border: 1px dashed rgba(139, 92, 246, 0.4); padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.78rem; color: #6d28d9;">
+            🔑 <strong>Akun Demo Admin:</strong> Username: <code>admin</code> | Password: <code>admin123</code>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">Masuk Sebagai Admin →</button>
+        </form>
+        <form id="formLoginSiswa" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Username Siswa</label>
+            <input type="text" id="siswaUsernameInput" class="form-control" placeholder="Contoh: ahmad.fauzi" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password Siswa</label>
+            <input type="password" id="siswaPasswordInput" class="form-control" placeholder="siswa123" required>
+          </div>
+          <div style="background: #ede9fe; border: 1px dashed rgba(124, 58, 237, 0.4); padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.78rem; color: #5b21b6;">
+            💡 <strong>Akun Demo Siswa:</strong> Username: <code>ahmad.fauzi</code> | Password: <code>siswa123</code>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">Masuk Sebagai Siswa →</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW 2: ADMIN PORTAL -->
+    <div id="adminAppView" style="display: none;">
+      <div class="hero-card">
+        <div class="hero-header-row">
+          <div>
+            <div class="hero-badge-pill" style="margin-bottom: 0.75rem;"><span>⚡ Pusat Kontrol Pembelajaran</span></div>
+            <h1 class="hero-title">Dashboard Administrator LMS</h1>
+            <p class="hero-subtitle">Kelola kelas, input siswa secara masal, unggah materi video & dokumen, serta evaluasi tugas siswa secara terpusat.</p>
+          </div>
+          <button id="btnOpenChangePass" class="btn btn-sm btn-secondary" style="background: rgba(255, 255, 255, 0.25); color: #fff;">🔒 Ganti Password</button>
+        </div>
+        <div class="hero-slider-bar">
+          <div class="hero-slider-info">
+            <span id="heroProgressLabel">0% Tugas Selesai Dinilai</span>
+            <span>EduCloud Active</span>
+          </div>
+          <div class="hero-progress-track">
+            <div id="heroProgressFill" class="hero-progress-fill" style="width: 45%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-action-grid">
+        <button class="action-tile-btn admin-nav-btn active" data-tab="dashboard" onclick="navigasiTabAdmin('dashboard')">
+          <div class="tile-icon-box tile-icon-purple">📊</div>
+          <span class="tile-label">Ringkasan</span>
+          <span class="tile-subtext">Statistik Utama</span>
+        </button>
+        <button class="action-tile-btn admin-nav-btn" data-tab="kelas" onclick="navigasiTabAdmin('kelas')">
+          <div class="tile-icon-box tile-icon-amber">🏫</div>
+          <span class="tile-label">Data Kelas</span>
+          <span class="tile-subtext">Input Masal Kelas</span>
+        </button>
+        <button class="action-tile-btn admin-nav-btn" data-tab="siswa" onclick="navigasiTabAdmin('siswa')">
+          <div class="tile-icon-box tile-icon-cyan">👨‍🎓</div>
+          <span class="tile-label">Data Siswa</span>
+          <span class="tile-subtext">Auto-Generate Akun</span>
+        </button>
+        <button class="action-tile-btn admin-nav-btn" data-tab="materi" onclick="navigasiTabAdmin('materi')">
+          <div class="tile-icon-box tile-icon-emerald">📚</div>
+          <span class="tile-label">Materi Ajar</span>
+          <span class="tile-subtext">YT, Drive & Web</span>
+        </button>
+        <button class="action-tile-btn admin-nav-btn" data-tab="tugas" onclick="navigasiTabAdmin('tugas')">
+          <div class="tile-icon-box" style="background: linear-gradient(135deg, #f43f5e, #e11d48); color: #fff;">📝</div>
+          <span class="tile-label">Tugas & Soal</span>
+          <span class="tile-subtext">Penilaian Siswa</span>
+        </button>
+      </div>
+
+      <div id="secAdmin_dashboard" class="admin-section">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div><div class="stat-number" id="dashTotalKelas">0</div><div class="stat-title">Total Kelas</div></div>
+            <div class="stat-icon-wrapper" style="background: #ede9fe; color: #7c3aed;">🏫</div>
+          </div>
+          <div class="stat-card">
+            <div><div class="stat-number" id="dashTotalSiswa">0</div><div class="stat-title">Total Siswa</div></div>
+            <div class="stat-icon-wrapper" style="background: #e0f2fe; color: #0284c7;">👨‍🎓</div>
+          </div>
+          <div class="stat-card">
+            <div><div class="stat-number" id="dashTotalMateri">0</div><div class="stat-title">Total Materi</div></div>
+            <div class="stat-icon-wrapper" style="background: #d1fae5; color: #059669;">📚</div>
+          </div>
+          <div class="stat-card">
+            <div><div class="stat-number" id="dashTotalTugas">0</div><div class="stat-title">Tugas Dibuat</div></div>
+            <div class="stat-icon-wrapper" style="background: #fce7f3; color: #db2777;">📝</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <div class="glass-panel" style="margin-bottom: 0;">
+            <div class="panel-header" style="margin-bottom: 1rem;"><h3 class="panel-title"><span>📦</span> Tipe Materi Tersimpan</h3></div>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #fee2e2; border-radius: var(--radius-sm); font-weight: 700; color: #b91c1c;">
+                <span>▶️ Video YouTube</span><span id="dashYtCount">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #dbeafe; border-radius: var(--radius-sm); font-weight: 700; color: #1d4ed8;">
+                <span>📁 Dokumen Google Drive</span><span id="dashGdCount">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #d1fae5; border-radius: var(--radius-sm); font-weight: 700; color: #047857;">
+                <span>🌐 Tautan Website Eksternal</span><span id="dashWsCount">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="glass-panel" style="margin-bottom: 0;">
+            <div class="panel-header" style="margin-bottom: 1rem;"><h3 class="panel-title"><span>🕒</span> Aktivitas Terbaru Sistem</h3></div>
+            <div id="dashRecentLogsList" style="max-height: 240px; overflow-y: auto;">
+              <p class="text-muted" style="text-align: center; padding: 1rem;">Memuat catatan aktivitas...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="secAdmin_kelas" class="admin-section" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><span>🏫</span> Manajemen Data Kelas</h3>
+            <button class="btn btn-primary" onclick="bukaModal('modalBulkAddClass')">+ Input Kelas Masal</button>
+          </div>
+          <div id="classListContainer" class="cards-grid"></div>
+        </div>
+      </div>
+
+      <div id="secAdmin_siswa" class="admin-section" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><span>👨‍🎓</span> Manajemen Siswa & Akun</h3>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <select id="adminStudentFilterClass" class="form-select" style="width: auto;" onchange="muatDaftarSiswa(this.value)">
+                <option value="ALL">Semua Kelas</option>
+              </select>
+              <button class="btn btn-primary" onclick="bukaModalBulkSiswa()">+ Input Siswa Masal</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead><tr><th>No</th><th>Nama Lengkap</th><th>Kelas</th><th>Username</th><th>Password</th><th>Aksi</th></tr></thead>
+              <tbody id="studentTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="secAdmin_materi" class="admin-section" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><span>📚</span> Materi Pembelajaran</h3>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <select id="adminMaterialFilterClass" class="form-select" style="width: auto;" onchange="muatDaftarMateri(this.value)">
+                <option value="ALL">Semua Kelas</option>
+              </select>
+              <button class="btn btn-primary" onclick="bukaModalTambahMateri()">+ Tambah Materi Baru</button>
+            </div>
+          </div>
+          <div id="adminMaterialGrid" class="cards-grid"></div>
+        </div>
+      </div>
+
+      <div id="secAdmin_tugas" class="admin-section" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><span>📝</span> Tugas & Penilaian Siswa</h3>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <select id="adminAssignmentFilterClass" class="form-select" style="width: auto;" onchange="muatDaftarTugas(this.value)">
+                <option value="ALL">Semua Kelas</option>
+              </select>
+              <button class="btn btn-primary" onclick="bukaModalTambahTugas()">+ Buat Tugas Baru</button>
+            </div>
+          </div>
+          <div id="adminAssignmentGrid" class="cards-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: STUDENT PORTAL -->
+    <div id="studentAppView" style="display: none;">
+      <div class="hero-card" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);">
+        <div>
+          <div class="hero-badge-pill" style="margin-bottom: 0.75rem;"><span>👋 Ruang Belajar Digital</span></div>
+          <h1 class="hero-title">Halo, <span id="studentGreetingName">Siswa</span>!</h1>
+          <p class="hero-subtitle">Selamat datang di kelas <span id="studentClassBadge" class="badge-class" style="background: rgba(255,255,255,0.3); color: #fff;">-</span>.</p>
+        </div>
+      </div>
+
+      <div class="tabs-nav" style="margin-bottom: 1.5rem; max-width: 400px;">
+        <button id="tabStudentMateri" class="tab-btn active" style="flex: 1; justify-content: center;" onclick="alihkanTabSiswa('materi')">📖 Materi Pembelajaran</button>
+        <button id="tabStudentTugas" class="tab-btn" style="flex: 1; justify-content: center;" onclick="alihkanTabSiswa('tugas')">📝 Tugas & Soal</button>
+      </div>
+
+      <div id="secStudentMateri">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><span>📚</span> Materi Tersedia</h3>
+            <div style="display: flex; gap: 0.4rem; overflow-x: auto;">
+              <button class="btn btn-sm btn-secondary" onclick="renderMateriSiswa('ALL')">Semua</button>
+              <button class="btn btn-sm btn-secondary" onclick="renderMateriSiswa('youtube')">▶️ Video YT</button>
+              <button class="btn btn-sm btn-secondary" onclick="renderMateriSiswa('gdrive')">📁 Drive PDF</button>
+              <button class="btn btn-sm btn-secondary" onclick="renderMateriSiswa('website')">🌐 Website</button>
+            </div>
+          </div>
+          <div id="studentMaterialGrid" class="cards-grid"></div>
+        </div>
+      </div>
+
+      <div id="secStudentTugas" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><span>📝</span> Lembar Tugas & Ujian</h3>
+          </div>
+          <div id="studentAssignmentGrid" class="cards-grid"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modals -->
+  <div id="modalBulkAddClass" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><h3 class="modal-title"><span>🏫</span> Input Kelas Masal</h3><button class="modal-close-btn">&times;</button></div>
+      <form id="formBulkAddClass" onsubmit="handleBulkAddClass(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Daftar Nama Kelas (Satu baris per kelas)</label>
+            <textarea id="bulkClassInput" class="form-textarea" placeholder="10 MIPA 1&#10;10 MIPA 2&#10;11 IPS 1" required rows="6"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button><button type="submit" class="btn btn-primary">Simpan Semua Kelas</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalBulkAddStudent" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><h3 class="modal-title"><span>👨‍🎓</span> Input Siswa Masal</h3><button class="modal-close-btn">&times;</button></div>
+      <form id="formBulkAddStudent" onsubmit="handleBulkAddStudent(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Pilih Kelas Tujuan</label>
+            <select id="bulkStudentClassSelect" class="form-select" required><option value="">-- Pilih Kelas --</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Daftar Nama Siswa (Hanya nama, satu per baris)</label>
+            <textarea id="bulkStudentNamesInput" class="form-textarea" placeholder="Ahmad Dahlan&#10;Budi Hartono" required rows="6" oninput="updatePreviewUsernameSiswa()"></textarea>
+            <div class="form-hint">Username otomatis: <code>nama.lengkap</code> | Password: <code>siswa123</code></div>
+          </div>
+          <div style="background: #f5f3ff; border: 1px solid rgba(139, 92, 246, 0.2); border-radius: var(--radius-sm); padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">
+              <span>Pratinjau Akun Otomatis</span><span>Total: <strong id="studentPreviewCount">0</strong> Siswa</span>
+            </div>
+            <div id="studentPreviewArea" style="max-height: 110px; overflow-y: auto;"></div>
+          </div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button><button type="submit" class="btn btn-primary">Daftarkan Seluruh Siswa</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalAddMaterial" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><h3 class="modal-title"><span>📚</span> Tambah Materi</h3><button class="modal-close-btn">&times;</button></div>
+      <form id="formAddMaterial" onsubmit="handleAddMaterial(event)">
+        <div class="modal-body">
+          <div class="form-group"><label class="form-label">Judul Materi</label><input type="text" id="matJudulInput" class="form-control" required></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group"><label class="form-label">Kelas</label><select id="matClassSelect" class="form-select" required></select></div>
+            <div class="form-group"><label class="form-label">Tipe Sumber</label><select id="matTypeSelect" class="form-select" required><option value="youtube">▶️ Link YouTube</option><option value="gdrive">📁 Link GDrive</option><option value="website">🌐 Link Website</option></select></div>
+          </div>
+          <div class="form-group"><label class="form-label">Tautan Link</label><input type="url" id="matLinkInput" class="form-control" required></div>
+          <div class="form-group"><label class="form-label">Deskripsi</label><textarea id="matDescInput" class="form-textarea"></textarea></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button><button type="submit" class="btn btn-primary">Publikasikan Materi</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalAddAssignment" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><h3 class="modal-title"><span>📝</span> Buat Tugas & Soal</h3><button class="modal-close-btn">&times;</button></div>
+      <form id="formAddAssignment" onsubmit="handleAddAssignment(event)">
+        <div class="modal-body">
+          <div class="form-group"><label class="form-label">Judul Tugas</label><input type="text" id="tgsJudulInput" class="form-control" required></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group"><label class="form-label">Kelas</label><select id="tgsClassSelect" class="form-select" required></select></div>
+            <div class="form-group"><label class="form-label">Deadline</label><input type="datetime-local" id="tgsDeadlineInput" class="form-control"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Instruksi Soal</label><textarea id="tgsDescInput" class="form-textarea" rows="4"></textarea></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button><button type="submit" class="btn btn-primary">Publikasikan Tugas</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalGradeSubmissions" class="modal-overlay">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header"><h3 class="modal-title"><span>📋</span> Pengumpulan: <span id="modalGradeTaskTitle" style="color: var(--primary);"></span></h3><button class="modal-close-btn">&times;</button></div>
+      <div class="modal-body"><div id="modalSubmissionsContainer"></div></div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Tutup</button></div>
+    </div>
+  </div>
+
+  <div id="modalSubmitAssignment" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><h3 class="modal-title"><span>✍️</span> Kerjakan Tugas</h3><button class="modal-close-btn">&times;</button></div>
+      <form id="formSubmitAssignment" onsubmit="handleSubmitAssignment(event)">
+        <input type="hidden" id="submitModalTaskId">
+        <div class="modal-body">
+          <div style="background: #f5f3ff; padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+            <strong id="submitModalTaskTitle" style="font-size: 1.05rem;"></strong>
+            <p id="submitModalTaskDesc" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem; white-space: pre-wrap;"></p>
+          </div>
+          <div class="form-group"><label class="form-label">Jawaban Teks / Esai</label><textarea id="submitAnswerText" class="form-textarea" rows="5"></textarea></div>
+          <div class="form-group"><label class="form-label">Link Google Drive / Dokumen Lampiran</label><input type="url" id="submitAttachmentLink" class="form-control"></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button><button type="submit" class="btn btn-primary">Kirimkan Jawaban</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalYoutubePlayer" class="modal-overlay">
+    <div class="modal-content" style="max-width: 800px; padding: 0; overflow: hidden;">
+      <div class="modal-header" style="padding: 1rem 1.5rem;"><h3 class="modal-title" id="youtubeModalTitle">Pemutar Video</h3><button class="modal-close-btn" onclick="tutupModal('modalYoutubePlayer')">&times;</button></div>
+      <div style="padding: 1.25rem;"><div id="youtubeIframeWrapper" class="video-responsive-wrap"></div></div>
+    </div>
+  </div>
+
+  <div id="modalChangePassword" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><h3 class="modal-title"><span>🔒</span> Ganti Kredensial Admin</h3><button class="modal-close-btn">&times;</button></div>
+      <form id="formChangePassword">
+        <div class="modal-body">
+          <div class="form-group"><label class="form-label">Username Saat Ini</label><input type="text" id="cpOldUsername" class="form-control" required></div>
+          <div class="form-group"><label class="form-label">Password Saat Ini</label><input type="password" id="cpOldPassword" class="form-control" required></div>
+          <hr style="border: 0; border-top: 1px dashed rgba(139, 92, 246, 0.25); margin: 1.25rem 0;">
+          <div class="form-group"><label class="form-label">Username Baru</label><input type="text" id="cpNewUsername" class="form-control" required></div>
+          <div class="form-group"><label class="form-label">Password Baru</label><input type="password" id="cpNewPassword" class="form-control" required></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button><button type="submit" class="btn btn-primary">Simpan Kredensial Baru</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="loadingOverlay" class="loading-spinner-overlay"><div class="spinner-ring"></div><div id="loadingText" class="loading-text">Memproses data...</div></div>
+
+  <!-- Inlined Scripts: config.js + app.js -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS EduCloud - Smart Learning Platform</title>
+  
+  <!-- Font Modern Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Floating Background Glow Orbs -->
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+  <div class="bg-glow-orb orb-3"></div>
+
+  <!-- Navbar Atas -->
+  <header class="navbar">
+    <div class="nav-brand" onclick="location.reload()">
+      <div class="nav-logo-icon">☁️</div>
+      <div>
+        <span style="font-weight: 800; color: #1e1b4b;">EduCloud</span>
+        <span class="nav-badge-cloud">LMS</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Badge Pengguna Aktif -->
+      <div id="userProfileBadge" class="user-profile-badge" style="display: none;">
+        <div id="navUserAvatar" class="user-avatar-pill">A</div>
+        <div>
+          <div id="navUserName" class="user-meta-name">Administrator</div>
+          <div id="navUserRole" class="user-meta-role">ADMIN</div>
+        </div>
+      </div>
+
+      <!-- Tombol Logout -->
+      <button id="btnLogout" class="btn btn-sm btn-secondary" style="display: none;">
+        🚪 Keluar
+      </button>
+    </div>
+  </header>
+
+  <main class="app-container">
+
+    <!-- ================================================================== -->
+    <!-- VIEW 1: HALAMAN LOGIN (ADMIN & SISWA)                                -->
+    <!-- ================================================================== -->
+    <div id="loginView" style="max-width: 480px; margin: 3rem auto;">
+      <div class="glass-panel" style="padding: 2.5rem 2rem; box-shadow: var(--shadow-lg), var(--shadow-glow);">
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <div style="width: 68px; height: 68px; border-radius: 22px; background: linear-gradient(135deg, #7c3aed, #ec4899); display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #fff; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4); margin-bottom: 1rem;">
+            🎓
+          </div>
+          <h2 style="font-size: 1.65rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px;">
+            LMS EduCloud
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.35rem;">
+            Masuk ke portal pembelajaran interaktif Anda
+          </p>
+        </div>
+
+        <!-- Tab Pemilih Peran (Role Switcher) -->
+        <div class="tabs-nav" style="margin-bottom: 1.75rem;">
+          <button id="tabBtnLoginAdmin" class="tab-btn active" style="flex: 1; justify-content: center;">
+            👑 Admin / Guru
+          </button>
+          <button id="tabBtnLoginSiswa" class="tab-btn" style="flex: 1; justify-content: center;">
+            👨‍🎓 Siswa
+          </button>
+        </div>
+
+        <!-- Form Login Admin -->
+        <form id="formLoginAdmin">
+          <div class="form-group">
+            <label class="form-label">Username Admin</label>
+            <input type="text" id="adminUsernameInput" class="form-control" placeholder="Contoh: admin" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password Admin</label>
+            <input type="password" id="adminPasswordInput" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <div style="background: #f5f3ff; border: 1px dashed rgba(139, 92, 246, 0.4); padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.78rem; color: #6d28d9;">
+            🔑 <strong>Akun Demo Admin:</strong> Username: <code>admin</code> | Password: <code>admin123</code>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+            Masuk Sebagai Admin →
+          </button>
+        </form>
+
+        <!-- Form Login Siswa -->
+        <form id="formLoginSiswa" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Username Siswa</label>
+            <input type="text" id="siswaUsernameInput" class="form-control" placeholder="Contoh: ahmad.fauzi" required autocomplete="username">
+            <div class="form-hint">Dibuat otomatis oleh Admin saat pendaftaran kelas.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password Siswa</label>
+            <input type="password" id="siswaPasswordInput" class="form-control" placeholder="siswa123" required autocomplete="current-password">
+          </div>
+          <div style="background: #ede9fe; border: 1px dashed rgba(124, 58, 237, 0.4); padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.78rem; color: #5b21b6;">
+            💡 <strong>Akun Demo Siswa:</strong> Username: <code>ahmad.fauzi</code> | Password: <code>siswa123</code>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+            Masuk Sebagai Siswa →
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- VIEW 2: PORTAL UTAMA ADMIN                                          -->
+    <!-- ================================================================== -->
+    <div id="adminAppView" style="display: none;">
+      
+      <!-- Hero Banner Card (Glass Gradient dengan Progress Slider) -->
+      <div class="hero-card">
+        <div class="hero-header-row">
+          <div>
+            <div class="hero-badge-pill" style="margin-bottom: 0.75rem;">
+              <span>⚡ Pusat Kontrol Pembelajaran</span>
+            </div>
+            <h1 class="hero-title">Dashboard Administrator LMS</h1>
+            <p class="hero-subtitle">
+              Kelola kelas, input siswa secara masal, unggah materi video & dokumen, serta evaluasi tugas siswa secara terpusat.
+            </p>
+          </div>
+          <button id="btnOpenChangePass" class="btn btn-sm btn-secondary" style="background: rgba(255, 255, 255, 0.25); color: #fff; border: 1px solid rgba(255, 255, 255, 0.4);">
+            🔒 Ganti Password
+          </button>
+        </div>
+
+        <div class="hero-slider-bar">
+          <div class="hero-slider-info">
+            <span id="heroProgressLabel">0% Tugas Selesai Dinilai</span>
+            <span>EduCloud Cloud Storage Active</span>
+          </div>
+          <div class="hero-progress-track">
+            <div id="heroProgressFill" class="hero-progress-fill" style="width: 45%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Navigation Tiles (Terinspirasi Desain Referensi Pengguna) -->
+      <div class="quick-action-grid">
+        <button class="action-tile-btn admin-nav-btn active" data-tab="dashboard" onclick="navigasiTabAdmin('dashboard')">
+          <div class="tile-icon-box tile-icon-purple">📊</div>
+          <span class="tile-label">Ringkasan</span>
+          <span class="tile-subtext">Statistik Utama</span>
+        </button>
+
+        <button class="action-tile-btn admin-nav-btn" data-tab="kelas" onclick="navigasiTabAdmin('kelas')">
+          <div class="tile-icon-box tile-icon-amber">🏫</div>
+          <span class="tile-label">Data Kelas</span>
+          <span class="tile-subtext">Input Masal Kelas</span>
+        </button>
+
+        <button class="action-tile-btn admin-nav-btn" data-tab="siswa" onclick="navigasiTabAdmin('siswa')">
+          <div class="tile-icon-box tile-icon-cyan">👨‍🎓</div>
+          <span class="tile-label">Data Siswa</span>
+          <span class="tile-subtext">Auto-Generate Akun</span>
+        </button>
+
+        <button class="action-tile-btn admin-nav-btn" data-tab="materi" onclick="navigasiTabAdmin('materi')">
+          <div class="tile-icon-box tile-icon-emerald">📚</div>
+          <span class="tile-label">Materi Ajar</span>
+          <span class="tile-subtext">YT, Drive & Web</span>
+        </button>
+
+        <button class="action-tile-btn admin-nav-btn" data-tab="tugas" onclick="navigasiTabAdmin('tugas')">
+          <div class="tile-icon-box" style="background: linear-gradient(135deg, #f43f5e, #e11d48); color: #fff;">📝</div>
+          <span class="tile-label">Tugas & Soal</span>
+          <span class="tile-subtext">Penilaian Siswa</span>
+        </button>
+      </div>
+
+      <!-- SECTION 1: RINGKASAN DASHBOARD -->
+      <div id="secAdmin_dashboard" class="admin-section">
+        <!-- 4 Kotak Kartu Statistik -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div>
+              <div class="stat-number" id="dashTotalKelas">0</div>
+              <div class="stat-title">Total Kelas</div>
+            </div>
+            <div class="stat-icon-wrapper" style="background: #ede9fe; color: #7c3aed;">🏫</div>
+          </div>
+
+          <div class="stat-card">
+            <div>
+              <div class="stat-number" id="dashTotalSiswa">0</div>
+              <div class="stat-title">Total Siswa</div>
+            </div>
+            <div class="stat-icon-wrapper" style="background: #e0f2fe; color: #0284c7;">👨‍🎓</div>
+          </div>
+
+          <div class="stat-card">
+            <div>
+              <div class="stat-number" id="dashTotalMateri">0</div>
+              <div class="stat-title">Total Materi</div>
+            </div>
+            <div class="stat-icon-wrapper" style="background: #d1fae5; color: #059669;">📚</div>
+          </div>
+
+          <div class="stat-card">
+            <div>
+              <div class="stat-number" id="dashTotalTugas">0</div>
+              <div class="stat-title">Tugas Dibuat</div>
+            </div>
+            <div class="stat-icon-wrapper" style="background: #fce7f3; color: #db2777;">📝</div>
+          </div>
+        </div>
+
+        <!-- Baris Distribusi Materi & Aktivitas Terbaru -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          
+          <!-- Distribusi Materi -->
+          <div class="glass-panel" style="margin-bottom: 0;">
+            <div class="panel-header" style="margin-bottom: 1rem;">
+              <h3 class="panel-title">
+                <span class="panel-title-icon">📦</span> Tipe Materi Tersimpan
+              </h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #fee2e2; border-radius: var(--radius-sm); font-weight: 700; color: #b91c1c;">
+                <span>▶️ Video YouTube</span>
+                <span id="dashYtCount" style="font-size: 1.1rem;">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #dbeafe; border-radius: var(--radius-sm); font-weight: 700; color: #1d4ed8;">
+                <span>📁 Dokumen Google Drive</span>
+                <span id="dashGdCount" style="font-size: 1.1rem;">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #d1fae5; border-radius: var(--radius-sm); font-weight: 700; color: #047857;">
+                <span>🌐 Tautan Website Eksternal</span>
+                <span id="dashWsCount" style="font-size: 1.1rem;">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Log Aktivitas Terbaru -->
+          <div class="glass-panel" style="margin-bottom: 0;">
+            <div class="panel-header" style="margin-bottom: 1rem;">
+              <h3 class="panel-title">
+                <span class="panel-title-icon">🕒</span> Aktivitas Terbaru Sistem
+              </h3>
+            </div>
+            <div id="dashRecentLogsList" style="max-height: 240px; overflow-y: auto;">
+              <p class="text-muted" style="text-align: center; padding: 1rem;">Memuat catatan aktivitas...</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tombol Aksi Cepat Bawah -->
+        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+          <button id="quickAddClassBtn" class="btn btn-secondary">➕ Tambah Kelas Masal</button>
+          <button id="quickAddStudentBtn" class="btn btn-secondary">👥 Input Siswa Masal</button>
+          <button id="quickAddMaterialBtn" class="btn btn-secondary">📖 Unggah Materi</button>
+          <button id="quickAddAssignmentBtn" class="btn btn-secondary">📝 Buat Tugas</button>
+        </div>
+      </div>
+
+      <!-- SECTION 2: DATA KELAS -->
+      <div id="secAdmin_kelas" class="admin-section" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <span class="panel-title-icon">🏫</span> Manajemen Data Kelas
+            </h3>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-primary" onclick="bukaModal('modalBulkAddClass')">
+                + Input Kelas Masal
+              </button>
+            </div>
+          </div>
+          <div id="classListContainer" class="cards-grid">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: DATA SISWA -->
+      <div id="secAdmin_siswa" class="admin-section" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <span class="panel-title-icon">👨‍🎓</span> Manajemen Siswa & Akun
+            </h3>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <select id="adminStudentFilterClass" class="form-select" style="width: auto;" onchange="muatDaftarSiswa(this.value)">
+                <option value="ALL">Semua Kelas</option>
+              </select>
+              <button class="btn btn-primary" onclick="bukaModalBulkSiswa()">
+                + Input Siswa Masal
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nama Lengkap</th>
+                  <th>Kelas</th>
+                  <th>Username</th>
+                  <th>Password</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="studentTableBody">
+                <!-- Diisi otomatis oleh JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: MATERI AJAR -->
+      <div id="secAdmin_materi" class="admin-section" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <span class="panel-title-icon">📚</span> Materi Pembelajaran
+            </h3>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <select id="adminMaterialFilterClass" class="form-select" style="width: auto;" onchange="muatDaftarMateri(this.value)">
+                <option value="ALL">Semua Kelas</option>
+              </select>
+              <button class="btn btn-primary" onclick="bukaModalTambahMateri()">
+                + Tambah Materi Baru
+              </button>
+            </div>
+          </div>
+          <div id="adminMaterialGrid" class="cards-grid">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: TUGAS & PENILAIAN -->
+      <div id="secAdmin_tugas" class="admin-section" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <span class="panel-title-icon">📝</span> Tugas & Penilaian Siswa
+            </h3>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <select id="adminAssignmentFilterClass" class="form-select" style="width: auto;" onchange="muatDaftarTugas(this.value)">
+                <option value="ALL">Semua Kelas</option>
+              </select>
+              <button class="btn btn-primary" onclick="bukaModalTambahTugas()">
+                + Buat Tugas Baru
+              </button>
+            </div>
+          </div>
+          <div id="adminAssignmentGrid" class="cards-grid">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- VIEW 3: PORTAL UTAMA SISWA                                          -->
+    <!-- ================================================================== -->
+    <div id="studentAppView" style="display: none;">
+      
+      <!-- Kartu Sambutan Siswa -->
+      <div class="hero-card" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);">
+        <div>
+          <div class="hero-badge-pill" style="margin-bottom: 0.75rem;">
+            <span>👋 Ruang Belajar Digital</span>
+          </div>
+          <h1 class="hero-title">Halo, <span id="studentGreetingName">Siswa</span>!</h1>
+          <p class="hero-subtitle">
+            Selamat datang di kelas <span id="studentClassBadge" class="badge-class" style="background: rgba(255,255,255,0.3); color: #fff; font-size: 0.9rem;">-</span>.
+            Simak materi pembelajaran yang telah disiapkan guru dan kumpulkan tugas tepat waktu.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tab Switcher Materi vs Tugas -->
+      <div class="tabs-nav" style="margin-bottom: 1.5rem; max-width: 400px;">
+        <button id="tabStudentMateri" class="tab-btn active" style="flex: 1; justify-content: center;" onclick="alihkanTabSiswa('materi')">
+          📖 Materi Pembelajaran
+        </button>
+        <button id="tabStudentTugas" class="tab-btn" style="flex: 1; justify-content: center;" onclick="alihkanTabSiswa('tugas')">
+          📝 Tugas & Soal
+        </button>
+      </div>
+
+      <!-- SUB-VIEW 3.1: MATERI SISWA -->
+      <div id="secStudentMateri">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <span class="panel-title-icon">📚</span> Materi Tersedia
+            </h3>
+            <!-- Filter Tipe Materi -->
+            <div style="display: flex; gap: 0.4rem; overflow-x: auto;">
+              <button class="btn btn-sm btn-secondary" onclick="renderMateriSiswa('ALL')">Semua</button>
+              <button class="btn btn-sm btn-secondary" onclick="renderMateriSiswa('youtube')">▶️ Video YT</button>
+              <button class="btn btn-sm btn-secondary" onclick="renderMateriSiswa('gdrive')">📁 Drive PDF</button>
+              <button class="btn btn-sm btn-secondary" onclick="renderMateriSiswa('website')">🌐 Website</button>
+            </div>
+          </div>
+          <div id="studentMaterialGrid" class="cards-grid">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW 3.2: TUGAS SISWA -->
+      <div id="secStudentTugas" style="display: none;">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <span class="panel-title-icon">📝</span> Lembar Tugas & Ujian
+            </h3>
+          </div>
+          <div id="studentAssignmentGrid" class="cards-grid">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==================================================================== -->
+  <!-- MODALS INTERAKTIF                                                    -->
+  <!-- ==================================================================== -->
+
+  <!-- MODAL: INPUT KELAS MASAL -->
+  <div id="modalBulkAddClass" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>🏫</span> Input Kelas Masal</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <form id="formBulkAddClass" onsubmit="handleBulkAddClass(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Daftar Nama Kelas (Satu baris per kelas)</label>
+            <textarea id="bulkClassInput" class="form-textarea" placeholder="Contoh:&#10;10 MIPA 1&#10;10 MIPA 2&#10;10 IPS 1&#10;11 MIPA 1" required rows="6"></textarea>
+            <div class="form-hint">Pisahkan setiap kelas baru dengan menekan Enter (baris baru). ID kelas dibuat otomatis secara unik.</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Semua Kelas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: INPUT SISWA MASAL (AUTO-GENERATE USERNAME & PASSWORD) -->
+  <div id="modalBulkAddStudent" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>👨‍🎓</span> Input Siswa Masal</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <form id="formBulkAddStudent" onsubmit="handleBulkAddStudent(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Pilih Kelas Tujuan</label>
+            <select id="bulkStudentClassSelect" class="form-select" required>
+              <option value="">-- Pilih Kelas --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Daftar Nama Siswa (Hanya nama, satu per baris)</label>
+            <textarea id="bulkStudentNamesInput" class="form-textarea" placeholder="Contoh:&#10;Ahmad Dahlan&#10;Budi Hartono&#10;Citra Kirana&#10;Dewi Sandra" required rows="6" oninput="updatePreviewUsernameSiswa()"></textarea>
+            <div class="form-hint">
+              Sistem akan otomatis menghasilkan username (misal: <code>ahmad.dahlan</code>) dan password default: <code>siswa123</code>.
+            </div>
+          </div>
+
+          <!-- Preview Area Akun yang Akan Dibuat -->
+          <div style="background: #f5f3ff; border: 1px solid rgba(139, 92, 246, 0.2); border-radius: var(--radius-sm); padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">
+              <span>Pratinjau Akun Otomatis</span>
+              <span>Total: <strong id="studentPreviewCount">0</strong> Siswa</span>
+            </div>
+            <div id="studentPreviewArea" style="max-height: 110px; overflow-y: auto;">
+              <span style="color: var(--text-muted); font-size: 0.8rem;">Ketik atau tempel nama siswa di atas untuk melihat preview...</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button>
+          <button type="submit" class="btn btn-primary">Daftarkan Seluruh Siswa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: TAMBAH MATERI BARU -->
+  <div id="modalAddMaterial" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>📚</span> Tambah Materi Pembelajaran</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <form id="formAddMaterial" onsubmit="handleAddMaterial(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Judul Materi</label>
+            <input type="text" id="matJudulInput" class="form-control" placeholder="Contoh: Pengantar Vektor & Matriks" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Kelas</label>
+              <select id="matClassSelect" class="form-select" required>
+                <option value="">-- Pilih Kelas --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tipe Sumber</label>
+              <select id="matTypeSelect" class="form-select" required>
+                <option value="youtube">▶️ Link Video YouTube</option>
+                <option value="gdrive">📁 Link Dokumen GDrive</option>
+                <option value="website">🌐 Link Website Edukasi</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tautan / Link Materi</label>
+            <input type="url" id="matLinkInput" class="form-control" placeholder="https://www.youtube.com/watch?v=... atau https://drive.google.com/..." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Deskripsi / Petunjuk Baca</label>
+            <textarea id="matDescInput" class="form-textarea" placeholder="Tuliskan petunjuk pembelajaran atau ringkasan topik..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button>
+          <button type="submit" class="btn btn-primary">Publikasikan Materi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: TAMBAH TUGAS BARU -->
+  <div id="modalAddAssignment" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>📝</span> Buat Tugas & Soal Baru</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <form id="formAddAssignment" onsubmit="handleAddAssignment(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Judul Tugas / Ujian</label>
+            <input type="text" id="tgsJudulInput" class="form-control" placeholder="Contoh: Latihan 1 Aljabar Linier" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Kelas</label>
+              <select id="tgsClassSelect" class="form-select" required>
+                <option value="">-- Pilih Kelas --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Batas Waktu (Deadline)</label>
+              <input type="datetime-local" id="tgsDeadlineInput" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Instruksi Tugas / Soal Lengkap</label>
+            <textarea id="tgsDescInput" class="form-textarea" placeholder="Tuliskan butir soal atau petunjuk pengumpulan tugas..." rows="5"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button>
+          <button type="submit" class="btn btn-primary">Publikasikan Tugas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EVALUASI & PENILAIAN PENGUMPULAN SISWA (ADMIN) -->
+  <div id="modalGradeSubmissions" class="modal-overlay">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span>📋</span> Pengumpulan: <span id="modalGradeTaskTitle" style="color: var(--primary);"></span>
+        </h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="modalSubmissionsContainer">
+          <!-- Diisi otomatis oleh JavaScript -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-modal-cancel">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: KERJAKAN / KUMPULKAN TUGAS (SISWA) -->
+  <div id="modalSubmitAssignment" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>✍️</span> Kerjakan Tugas</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <form id="formSubmitAssignment" onsubmit="handleSubmitAssignment(event)">
+        <input type="hidden" id="submitModalTaskId">
+        <div class="modal-body">
+          <div style="background: #f5f3ff; padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+            <strong id="submitModalTaskTitle" style="font-size: 1.05rem; color: var(--text-main);"></strong>
+            <p id="submitModalTaskDesc" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem; white-space: pre-wrap;"></p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Jawaban Teks / Esai</label>
+            <textarea id="submitAnswerText" class="form-textarea" placeholder="Tuliskan jawaban atau rangkuman Anda di sini..." rows="5"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tautan Lampiran (Google Drive / File Link)</label>
+            <input type="url" id="submitAttachmentLink" class="form-control" placeholder="https://drive.google.com/file/d/...">
+            <div class="form-hint">Pastikan link Google Drive disetel ke "Anyone with the link can view".</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button>
+          <button type="submit" class="btn btn-primary">Kirimkan Jawaban</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: YOUTUBE VIDEO EMBED PLAYER -->
+  <div id="modalYoutubePlayer" class="modal-overlay">
+    <div class="modal-content" style="max-width: 800px; padding: 0; overflow: hidden;">
+      <div class="modal-header" style="padding: 1rem 1.5rem;">
+        <h3 class="modal-title" style="font-size: 1.05rem;" id="youtubeModalTitle">Pemutar Video</h3>
+        <button class="modal-close-btn" onclick="tutupModal('modalYoutubePlayer')">&times;</button>
+      </div>
+      <div style="padding: 1.25rem;">
+        <div id="youtubeIframeWrapper" class="video-responsive-wrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: GANTI USERNAME & PASSWORD ADMIN -->
+  <div id="modalChangePassword" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>🔒</span> Ganti Kredensial Admin</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <form id="formChangePassword">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Username Saat Ini</label>
+            <input type="text" id="cpOldUsername" class="form-control" placeholder="admin" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password Saat Ini</label>
+            <input type="password" id="cpOldPassword" class="form-control" placeholder="admin123" required autocomplete="current-password">
+          </div>
+          <hr style="border: 0; border-top: 1px dashed rgba(139, 92, 246, 0.25); margin: 1.25rem 0;">
+          <div class="form-group">
+            <label class="form-label">Username Baru</label>
+            <input type="text" id="cpNewUsername" class="form-control" placeholder="Masukkan username baru" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password Baru</label>
+            <input type="password" id="cpNewPassword" class="form-control" placeholder="Minimal 6 karakter" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Kredensial Baru</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- GLOBAL LOADING OVERLAY -->
+  <div id="loadingOverlay" class="loading-spinner-overlay">
+    <div class="spinner-ring"></div>
+    <div id="loadingText" class="loading-text">Memproses data...</div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
