@@ -164,9 +164,18 @@
           <div id="navUserRole" class="user-meta-role">ADMIN</div>
         </div>
       </div>
+      <button class="btn btn-sm btn-secondary" onclick="bukaModal('modalConfigUrl')">⚙️ Database</button>
       <button id="btnLogout" class="btn btn-sm btn-secondary" style="display: none;">🚪 Keluar</button>
     </div>
   </header>
+
+  <div id="apiConfigAlert" style="display: none; background: linear-gradient(90deg, #ede9fe, #fae8ff); border-bottom: 1px solid rgba(139, 92, 246, 0.25); padding: 0.65rem 1.5rem; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+    <div style="display: flex; align-items: center; gap: 0.5rem; color: #6d28d9; font-weight: 600;">
+      <span>💡</span>
+      <span>Aplikasi saat ini berjalan dalam <strong>Mode Simulasi Demo</strong>. Tempelkan URL Google Apps Script Web App Anda untuk terhubung ke Google Sheets langsung.</span>
+    </div>
+    <button class="btn btn-sm btn-primary" onclick="bukaModal('modalConfigUrl')">Hubungkan Sekarang</button>
+  </div>
 
   <main class="app-container">
     <!-- VIEW 1: LOGIN -->
@@ -530,6 +539,19 @@
           <div class="form-group"><label class="form-label">Password Baru</label><input type="password" id="cpNewPassword" class="form-control" required></div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Batal</button><button type="submit" class="btn btn-primary">Simpan Kredensial Baru</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalConfigUrl" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><h3 class="modal-title"><span>⚙️</span> Koneksi Google Apps Script</h3><button class="modal-close-btn">&times;</button></div>
+      <form id="formConfigUrl">
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Tempelkan URL Web App hasil Deploy Google Apps Script Anda (berakhiran <code>/exec</code>) di bawah ini:</p>
+          <div class="form-group"><label class="form-label">URL Web App Apps Script</label><input type="url" id="customApiUrlInput" class="form-control" placeholder="https://script.google.com/macros/s/.../exec" required></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-modal-cancel">Tutup</button><button type="submit" class="btn btn-primary">Simpan & Hubungkan</button></div>
       </form>
     </div>
   </div>

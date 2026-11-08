@@ -108,7 +108,7 @@ const CONFIG = {
   ...
 };
 ```
-> *Catatan: `config.js` adalah satu-satunya konfigurasi database di frontend. Tidak ada form/menu database di tampilan pengguna sehingga ketika repositori ini di-deploy ke Vercel, aplikasi langsung otomatis tersambung ke database Google Apps Script.*
+> *Tips Cepat: Anda juga dapat langsung menguji aplikasi di browser dan menempelkan URL Web App via tombol **"⚙️ Database"** di Navbar aplikasi tanpa mengedit kode!*
 
 ### Langkah 4: Push ke GitHub & Deploy ke Vercel
 

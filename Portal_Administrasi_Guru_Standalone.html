@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Administrasi Guru — SDN Sumberejo 04</title>
+  
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- React & Babel Standalone for Instant Live Preview -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#0a192f',
+              gold: '#f59e0b',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 9999px; }
+    @media print {
+      aside, header, nav, button, .no-print { display: none !important; }
+      body { background: white !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased selection:bg-amber-400 selection:text-slate-950">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // --- Mock Data ---
+    const mockUser = {
+      name: "Reza Fahlevi",
+      role: "Guru",
+      school: "SDN SUMBEREJO 04",
+      academicYear: "2026/2027"
+    };
+
+    const mockStudents = [
+      { id: "std-01", name: "Andi Pratama", nisn: "1234567890", nis: "001", className: "VI A", token: "TKN-SDN4-001" },
+      { id: "std-02", name: "Ahmad Fauzi", nisn: "1234567891", nis: "002", className: "VI A", token: "TKN-SDN4-002" },
+      { id: "std-03", name: "Budi Santoso", nisn: "1234567892", nis: "003", className: "VI A", token: "TKN-SDN4-003" },
+      { id: "std-04", name: "Citra Lestari", nisn: "1234567893", nis: "004", className: "VI A", token: "TKN-SDN4-004" },
+      { id: "std-05", name: "Deni Saputra", nisn: "1234567894", nis: "005", className: "VI A", token: "TKN-SDN4-005" },
+      { id: "std-06", name: "Eika Wijaya", nisn: "1234567895", nis: "006", className: "VI A", token: "TKN-SDN4-006" }
+    ];
+
+    function App() {
+      const [activeTab, setActiveTab] = useState('dashboard');
+      const [isDark, setIsDark] = useState(false);
+      const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
+      const [isIDCardOpen, setIsIDCardOpen] = useState(false);
+      const [isGradeInputOpen, setIsGradeInputOpen] = useState(false);
+      const [selectedStudent, setSelectedStudent] = useState(mockStudents[0]);
+      const [scanSuccess, setScanSuccess] = useState({ name: "Andi Pratama", time: "Kelas VI A • 07:24" });
+
+      useEffect(() => {
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }, [isDark]);
+
+      return (
+        <div className="min-h-screen flex">
+          {/* ========================================================================= */}
+          {/* DESKTOP SIDEBAR MATCHING IMAGE 1 (NAVY & GOLD)                             */}
+          {/* ========================================================================= */}
+          <aside className="hidden md:flex flex-col justify-between w-64 bg-[#0a192f] text-slate-200 h-screen sticky top-0 p-4 border-r border-slate-800 shrink-0">
+            <div>
+              {/* Brand Logo */}
+              <div className="flex items-center gap-3 px-2 py-3 mb-4 border-b border-slate-800">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-500 text-slate-950 flex items-center justify-center font-black shadow-lg shadow-amber-500/20">
+                  ★
+                </div>
+                <div>
+                  <h1 className="font-extrabold text-sm text-white tracking-tight leading-tight">Portal Administrasi</h1>
+                  <span className="text-amber-400 font-bold text-[11px] block">Guru • SDN Sumberejo 04</span>
+                </div>
+              </div>
+
+              {/* Menu Links */}
+              <nav className="space-y-1">
+                {[
+                  { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+                  { id: 'teachers', label: 'Kelola Guru', icon: '👨‍🏫' },
+                  { id: 'students', label: 'Kelola Siswa', icon: '👥' },
+                  { id: 'qrcards', label: 'Kartu QR Siswa', icon: '🪪' },
+                  { id: 'attendance', label: 'Presensi Siswa', icon: '📷' },
+                  { id: 'attendance-recap', label: 'Rekap Presensi', icon: '📋' },
+                  { id: 'grades', label: 'Penilaian', icon: '🎓' },
+                  { id: 'grades-recap', label: 'Rekap Nilai', icon: '📈' },
+                  { id: 'resources', label: 'Perangkat Ajar', icon: '📚' },
+                  { id: 'reports', label: 'Laporan', icon: '📄' },
+                  { id: 'settings', label: 'Pengaturan', icon: '⚙️' },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      if (item.id === 'attendance') setIsQRScannerOpen(true);
+                      else if (item.id === 'qrcards') setIsIDCardOpen(true);
+                      else if (item.id === 'grades') setIsGradeInputOpen(true);
+                      else setActiveTab(item.id);
+                    }}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition ${
+                      activeTab === item.id
+                        ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/25 translate-x-1'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                    }`}
+                  >
+                    <span>{item.icon}</span>
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            {/* Bottom Card Matching Image 1 */}
+            <div className="bg-gradient-to-br from-blue-900/60 to-slate-900 p-3 rounded-2xl border border-blue-500/20 text-center">
+              <span className="text-amber-400 text-xl block mb-1">📖</span>
+              <p className="text-xs font-bold text-white">Maju Bersama</p>
+              <p className="text-[10px] text-slate-300">untuk Pendidikan Berkualitas</p>
+            </div>
+          </aside>
+
+          {/* ========================================================================= */}
+          {/* MAIN WRAPPER & TOP NAVBAR                                                 */}
+          {/* ========================================================================= */}
+          <div className="flex-1 flex flex-col min-w-0 pb-24 md:pb-8">
+            {/* Top Navbar Matching Image 1 */}
+            <header className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-3 flex items-center justify-between">
+              <div className="relative w-64 sm:w-96">
+                <input
+                  type="text"
+                  placeholder="Cari menu atau data..."
+                  className="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 text-xs rounded-full border border-transparent focus:border-amber-400 focus:outline-none"
+                />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">🔍</span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Dark Mode */}
+                <button
+                  onClick={() => setIsDark(!isDark)}
+                  className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"
+                >
+                  {isDark ? '☀️' : '🌙'}
+                </button>
+
+                {/* Notifications */}
+                <div className="relative p-2 text-slate-600 dark:text-slate-300">
+                  🔔
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+                </div>
+
+                {/* User Profile Matching Image 1 */}
+                <div className="flex items-center gap-2.5 pl-3 border-l border-slate-200 dark:border-slate-800">
+                  <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs">
+                    RF
+                  </div>
+                  <div className="text-left text-xs leading-tight">
+                    <div className="font-bold text-slate-800 dark:text-white">Reza Fahlevi</div>
+                    <div className="text-[10px] text-slate-400">Guru</div>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            {/* Backend Status Banner (GAS Web App Config) */}
+            <div className="bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-800 px-4 py-2 text-xs text-amber-900 dark:text-amber-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span>⚠️</span>
+                <span><strong>Arsitektur PRD v1.2:</strong> Google Apps Script Backend terisolasi via <code>src/config/config.js</code>. Mode Simulasi aktif untuk pengujian visual.</span>
+              </div>
+              <span className="bg-amber-200 dark:bg-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full">MULTI-TENANT READY</span>
+            </div>
+
+            {/* ========================================================================= */}
+            {/* DASHBOARD CONTENT MATCHING IMAGE 1                                        */}
+            {/* ========================================================================= */}
+            <main className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+              {/* Hero Banner Matching Image 1 */}
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#0a192f] via-blue-950 to-slate-900 border border-slate-800 text-white p-6 sm:p-8 shadow-xl">
+                <div className="max-w-xl space-y-3 relative z-10">
+                  <h2 className="text-2xl sm:text-3xl font-black leading-tight">
+                    Selamat Datang, <br />
+                    <span className="text-amber-400">Reza Fahlevi!</span>
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Semangat mendidik, menginspirasi, dan membangun masa depan generasi bangsa.
+                  </p>
+                  <div className="pt-2 flex flex-wrap gap-3">
+                    <button
+                      onClick={() => alert("Jadwal Mengajar: Kelas VI A - Matematika (07:30 - 09:30)")}
+                      className="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs rounded-xl shadow-lg transition"
+                    >
+                      Lihat Jadwal Mengajar →
+                    </button>
+                    <button
+                      onClick={() => setIsQRScannerOpen(true)}
+                      className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition"
+                    >
+                      📷 Buka Scanner Presensi
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4 Stat Cards Matching Image 1 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white dark:bg-slate-900 rounded-3xl md:rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 flex items-center justify-center font-bold text-xl">👥</div>
+                    <div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white">258</div>
+                      <div className="text-xs text-slate-500 font-semibold">Total Siswa</div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">↑ 2%</span>
+                </div>
+
+                <div className="bg-white dark:bg-slate-900 rounded-3xl md:rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 flex items-center justify-center font-bold text-xl">🎓</div>
+                    <div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white">6</div>
+                      <div className="text-xs text-slate-500 font-semibold">Kelas</div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">↑ 0%</span>
+                </div>
+
+                <div className="bg-white dark:bg-slate-900 rounded-3xl md:rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center font-bold text-xl">👨‍🏫</div>
+                    <div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white">12</div>
+                      <div className="text-xs text-slate-500 font-semibold">Total Guru</div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">↑ 1%</span>
+                </div>
+
+                <div className="bg-white dark:bg-slate-900 rounded-3xl md:rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-bold text-xl">📅</div>
+                    <div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white">96.5%</div>
+                      <div className="text-xs text-slate-500 font-semibold">Kehadiran Hari Ini</div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">↑ 0.5%</span>
+                </div>
+              </div>
+
+              {/* Charts & Activities Matching Image 1 */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Attendance Line Chart (4 Cols) */}
+                <div className="lg:col-span-4 bg-white dark:bg-slate-900 rounded-3xl md:rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-xs text-slate-800 dark:text-white">Grafik Kehadiran Siswa</h3>
+                    <span className="text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">7 Hari Terakhir ▾</span>
+                  </div>
+                  <div className="h-40 flex items-center justify-center border-b border-dashed border-slate-100 dark:border-slate-800 text-xs">
+                    <svg viewBox="0 0 400 120" className="w-full h-full">
+                      <path d="M 20,80 Q 90,30 160,50 T 260,15 T 380,60" fill="none" stroke="#2563eb" strokeWidth="3" />
+                      <circle cx="260" cy="15" r="5" fill="#2563eb" />
+                      <text x="260" y="35" textAnchor="middle" className="text-[10px] font-bold fill-slate-800 dark:fill-white">98.2% (Jum)</text>
+                    </svg>
+                  </div>
+                  <div className="flex justify-between text-[11px] text-slate-400 mt-2 px-2">
+                    <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span className="font-bold text-blue-600">Jum</span><span>Sab</span><span>Min</span>
+                  </div>
+                </div>
+
+                {/* Grade Bar Chart (4 Cols) */}
+                <div className="lg:col-span-4 bg-white dark:bg-slate-900 rounded-3xl md:rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-xs text-slate-800 dark:text-white">Perkembangan Nilai</h3>
+                    <span className="text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">Semester Ganjil ▾</span>
+                  </div>
+                  <div className="h-40 grid grid-cols-4 gap-2 items-end pt-4 border-b border-slate-100 dark:border-slate-800 pb-2">
+                    {[
+                      { name: 'IPA', val: 86.5 },
+                      { name: 'MTK', val: 82.3 },
+                      { name: 'B.Indo', val: 88.7 },
+                      { name: 'IPS', val: 84.1 }
+                    ].map((item, i) => (
+                      <div key={i} className="flex flex-col items-center gap-1">
+                        <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300">{item.val}</span>
+                        <div className="w-5 bg-gradient-to-t from-blue-700 to-blue-500 rounded-t-lg" style={{ height: `${item.val}%` }}></div>
+                        <span className="text-[10px] text-slate-400">{item.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Activity Feed Matching Image 1 (4 Cols) */}
+                <div className="lg:col-span-4 bg-white dark:bg-slate-900 rounded-3xl md:rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-bold text-xs text-slate-800 dark:text-white">Aktivitas Terbaru</h3>
+                    <span className="text-[11px] text-blue-600 font-bold cursor-pointer">Lihat Semua →</span>
+                  </div>
+                  {[
+                    { title: "Presensi kelas VI A", sub: "Hari ini, 07:15", icon: "✅" },
+                    { title: "Nilai UH Matematika", sub: "Kelas V B, 08:20", icon: "📊" },
+                    { title: "Dokumen Modul Ajar", sub: "diunduh oleh Guru", icon: "📄" },
+                    { title: "Data siswa baru", sub: "diimport oleh Admin", icon: "👥" }
+                  ].map((act, i) => (
+                    <div key={i} className="flex items-center gap-2.5 text-xs">
+                      <span>{act.icon}</span>
+                      <div>
+                        <div className="font-bold text-slate-800 dark:text-slate-200">{act.title}</div>
+                        <div className="text-[10px] text-slate-400">{act.sub}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Action Button Modals */}
+              <div className="flex flex-wrap gap-3 pt-2">
+                <button
+                  onClick={() => setIsQRScannerOpen(true)}
+                  className="px-4 py-2 bg-slate-900 text-white dark:bg-slate-800 rounded-xl font-bold text-xs flex items-center gap-2 border border-slate-700 shadow-sm"
+                >
+                  📷 Modal QR Scanner
+                </button>
+                <button
+                  onClick={() => setIsIDCardOpen(true)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-sm"
+                >
+                  🪪 Modal Kartu Siswa (Cetak)
+                </button>
+                <button
+                  onClick={() => setIsGradeInputOpen(true)}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-sm"
+                >
+                  📝 Modal Input Nilai
+                </button>
+              </div>
+            </main>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* MOBILE FLOATING BOTTOM NAV MATCHING IMAGE 2                                */}
+          {/* ========================================================================= */}
+          <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 pointer-events-none">
+            <div className="max-w-md mx-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl pointer-events-auto px-4 py-2 flex items-center justify-around">
+              <button onClick={() => setActiveTab('dashboard')} className="flex flex-col items-center gap-0.5 text-amber-500 font-bold text-[10px]">
+                <span className="text-base">🏠</span> Home
+              </button>
+              <button onClick={() => setIsIDCardOpen(true)} className="flex flex-col items-center gap-0.5 text-slate-400 text-[10px]">
+                <span className="text-base">👥</span> Siswa
+              </button>
+              {/* Elevated Action Button in Center */}
+              <button
+                onClick={() => setIsQRScannerOpen(true)}
+                className="w-12 h-12 -mt-5 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 font-bold flex items-center justify-center shadow-lg ring-4 ring-white dark:ring-slate-900"
+              >
+                📷
+              </button>
+              <button onClick={() => setIsGradeInputOpen(true)} className="flex flex-col items-center gap-0.5 text-slate-400 text-[10px]">
+                <span className="text-base">🎓</span> Nilai
+              </button>
+              <button onClick={() => alert("Profil Guru: Reza Fahlevi (SDN Sumberejo 04)")} className="flex flex-col items-center gap-0.5 text-slate-400 text-[10px]">
+                <span className="text-base">⚙️</span> Akun
+              </button>
+            </div>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* MODAL 1: QR SCANNER MATCHING IMAGE 1                                      */}
+          {/* ========================================================================= */}
+          {isQRScannerOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+              <div className="bg-[#0a192f] text-white w-full max-w-4xl rounded-3xl border border-slate-800 p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <h3 className="font-extrabold text-sm text-white">Presensi Siswa › QR Scanner</h3>
+                  <button onClick={() => setIsQRScannerOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                  <div className="md:col-span-4 space-y-3 text-xs">
+                    <div>
+                      <label className="text-slate-400 block mb-1">Kelas</label>
+                      <select className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-white"><option>Kelas VI A</option></select>
+                    </div>
+                    <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 space-y-2">
+                      <div className="flex justify-between"><span>🟢 Hadir</span><span className="font-bold">24</span></div>
+                      <div className="flex justify-between"><span>🟡 Izin</span><span className="font-bold">2</span></div>
+                      <div className="flex justify-between"><span>🟠 Sakit</span><span className="font-bold">1</span></div>
+                      <div className="flex justify-between"><span>🔴 Alpa</span><span className="font-bold">1</span></div>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-8 flex flex-col items-center justify-center">
+                    <div className="w-full aspect-video bg-slate-950 rounded-2xl border-2 border-slate-800 relative flex items-center justify-center p-4">
+                      {/* Corner Targeting Guides */}
+                      <div className="w-48 h-48 border-2 border-cyan-400 rounded-2xl flex items-center justify-center relative">
+                        <span className="text-3xl animate-pulse">📷</span>
+                      </div>
+                      {/* Result Banner Matching Image 1 */}
+                      <div className="absolute bottom-3 left-3 right-3 bg-emerald-950/90 border border-emerald-500 rounded-xl p-2.5 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center font-bold">✓</div>
+                        <div className="text-xs">
+                          <div className="font-black text-emerald-400">Presensi Berhasil!</div>
+                          <div className="font-bold text-white">{scanSuccess.name}</div>
+                          <div className="text-[10px] text-slate-300">{scanSuccess.time}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* MODAL 2: KARTU IDENTITAS PESERTA DIDIK MATCHING IMAGE 1                   */}
+          {/* ========================================================================= */}
+          {isIDCardOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+              <div className="bg-[#0a192f] text-white w-full max-w-3xl rounded-3xl border border-slate-800 p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <h3 className="font-extrabold text-sm text-white">Kartu QR Siswa › Detail Kartu</h3>
+                  <button onClick={() => setIsIDCardOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                  <div className="md:col-span-4 space-y-3">
+                    <label className="text-xs text-slate-400 block">Pilih Siswa</label>
+                    <select
+                      value={selectedStudent.id}
+                      onChange={(e) => setSelectedStudent(mockStudents.find(s => s.id === e.target.value))}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white"
+                    >
+                      {mockStudents.map(s => <option key={s.id} value={s.id}>{s.name} ({s.nisn})</option>)}
+                    </select>
+                    <button onClick={() => window.print()} className="w-full py-2.5 bg-blue-600 rounded-xl font-bold text-xs text-white">🖨️ Cetak Kartu</button>
+                    <button onClick={() => window.print()} className="w-full py-2.5 bg-slate-800 rounded-xl font-bold text-xs text-slate-200">📥 Download PDF</button>
+                  </div>
+
+                  {/* Physical ID Card Preview Matching Image 1 */}
+                  <div className="md:col-span-8 flex justify-center">
+                    <div className="w-full max-w-sm bg-gradient-to-br from-blue-950 via-[#0a192f] to-slate-950 rounded-2xl p-4 border-2 border-amber-400/50 shadow-2xl text-slate-900 bg-white">
+                      <div className="bg-white rounded-xl p-3 border border-slate-200 space-y-2">
+                        <div className="flex items-center gap-2 border-b-2 border-amber-400 pb-1.5">
+                          <div className="w-8 h-8 rounded-full bg-blue-900 text-amber-400 font-bold flex items-center justify-center text-xs">SD</div>
+                          <div>
+                            <div className="font-extrabold text-xs text-blue-950">SDN SUMBEREJO 04</div>
+                            <div className="text-[9px] text-slate-500">Kec. Ambulu • Jember</div>
+                          </div>
+                        </div>
+                        <div className="text-center font-black text-[10px] text-blue-900 uppercase tracking-wider bg-blue-50 py-0.5 rounded">
+                          KARTU IDENTITAS PESERTA DIDIK
+                        </div>
+                        <div className="flex items-center gap-3 pt-1">
+                          <div className="w-16 h-20 bg-slate-200 rounded border flex items-center justify-center font-bold text-slate-500 text-xs">FOTO</div>
+                          <div className="flex-1 text-[11px] space-y-0.5">
+                            <div className="font-extrabold text-slate-900 text-xs">{selectedStudent.name}</div>
+                            <div>NISN: <strong>{selectedStudent.nisn}</strong></div>
+                            <div>NIS: {selectedStudent.nis}</div>
+                            <div>Kelas: <strong className="text-blue-900">{selectedStudent.className}</strong></div>
+                          </div>
+                          <div className="w-16 h-16 bg-slate-900 text-white rounded p-1 text-[8px] flex items-center justify-center font-mono">
+                            [QR TOKEN]
+                          </div>
+                        </div>
+                        <div className="border-t pt-1 flex justify-between text-[8px] font-bold text-slate-500">
+                          <span>TP 2026/2027</span>
+                          <span className="text-blue-900">Berprestasi • Berkarakter • Berakhlak Mulia</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* MODAL 3: INPUT NILAI MATCHING IMAGE 1                                      */}
+          {/* ========================================================================= */}
+          {isGradeInputOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+              <div className="bg-[#0a192f] text-white w-full max-w-4xl rounded-3xl border border-slate-800 p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <h3 className="font-extrabold text-sm text-white">Penilaian › Input Nilai</h3>
+                  <button onClick={() => setIsGradeInputOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+                </div>
+                <div className="flex flex-wrap gap-2 items-center text-xs">
+                  <span className="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">Kelas: VI A</span>
+                  <span className="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">Mapel: Matematika</span>
+                  <span className="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">Jenis: Ulangan Harian</span>
+                  <button onClick={() => { alert("Nilai berhasil disimpan!"); setIsGradeInputOpen(false); }} className="ml-auto px-4 py-1.5 bg-blue-600 rounded-lg font-bold text-white">Simpan Nilai</button>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-900 text-slate-400 uppercase text-[10px]">
+                      <tr><th className="p-2.5">No</th><th className="p-2.5">Nama Siswa</th><th className="p-2.5">NISN</th><th className="p-2.5">Nilai</th><th className="p-2.5">Keterangan</th></tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800">
+                      {mockStudents.map((s, i) => (
+                        <tr key={s.id}>
+                          <td className="p-2.5 text-slate-500">{i+1}</td>
+                          <td className="p-2.5 font-bold text-white">{s.name}</td>
+                          <td className="p-2.5 font-mono text-slate-400">{s.nisn}</td>
+                          <td className="p-2.5"><input defaultValue={85 + i} className="w-16 bg-slate-900 border border-slate-700 rounded p-1 text-center font-bold text-white" /></td>
+                          <td className="p-2.5 text-slate-400">-</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

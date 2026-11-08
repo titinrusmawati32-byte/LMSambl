@@ -64,9 +64,28 @@ async function apiRequest(action, payload = {}) {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  periksaKoneksiApiBanner();
   pulihkanSesiLogin();
   pasangEventListeners();
 });
+
+/**
+ * Tampilkan banner pengingat jika URL Apps Script belum dikonfigurasi
+ */
+function periksaKoneksiApiBanner() {
+  const isApiConfigured = CONFIG.API_URL &&
+    CONFIG.API_URL.startsWith("https://script.google.com") &&
+    !CONFIG.API_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE");
+
+  const banner = document.getElementById('apiConfigAlert');
+  if (banner) {
+    if (!isApiConfigured) {
+      banner.style.display = 'flex';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+}
 
 /**
  * Pasang seluruh event listener UI
@@ -108,6 +127,12 @@ function pasangEventListeners() {
   const formChangePass = document.getElementById('formChangePassword');
   if (formChangePass) {
     formChangePass.addEventListener('submit', handleChangePasswordAdmin);
+  }
+
+  // Form URL Konfigurasi Custom
+  const formConfigUrl = document.getElementById('formConfigUrl');
+  if (formConfigUrl) {
+    formConfigUrl.addEventListener('submit', handleSimpanCustomApiUrl);
   }
 
   // Tutup Modal ketika tombol close diklik atau overlay diklik
@@ -264,6 +289,21 @@ async function handleChangePasswordAdmin(e) {
     }
   } else {
     tampilkanToast(res.message, 'error');
+  }
+}
+
+function handleSimpanCustomApiUrl(e) {
+  e.preventDefault();
+  const inputUrl = document.getElementById('customApiUrlInput').value.trim();
+  if (inputUrl && inputUrl.startsWith('https://script.google.com')) {
+    CONFIG.API_URL = inputUrl;
+    localStorage.setItem(CONFIG.STORAGE_KEYS.API_URL_OVERRIDE, inputUrl);
+    tampilkanToast('URL Google Apps Script berhasil dihubungkan!', 'success');
+    tutupModal('modalConfigUrl');
+    periksaKoneksiApiBanner();
+    tampilkanHalamanSesuaiRole();
+  } else {
+    tampilkanToast('Harap masukkan URL Google Apps Script yang valid (berawalan https://script.google.com...)', 'error');
   }
 }
 
